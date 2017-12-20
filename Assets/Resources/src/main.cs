@@ -35,6 +35,8 @@ public class main : MonoBehaviour
 		}
 
 		if (Input.GetKeyDown("space"))
-			Debug.Log("Jumping");
+		{
+			Player.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 4), ForceMode2D.Impulse);
+		}
 	}
 }
