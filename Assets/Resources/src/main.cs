@@ -36,7 +36,7 @@ public class main : MonoBehaviour
 
 		if (Input.GetKeyDown("space"))
 		{
-			Player.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, 4), ForceMode2D.Impulse);
+			Player.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0, Player.jumpStrength), ForceMode2D.Impulse);
 		}
 	}
 }

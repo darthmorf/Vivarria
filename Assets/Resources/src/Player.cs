@@ -10,6 +10,7 @@ class Player
 	public static GameObject gameObject;
 
 	public static float horizontalSpeed = 0.05f;
+	public static int jumpStrength = 4;
 
 	static Player()
 	{
