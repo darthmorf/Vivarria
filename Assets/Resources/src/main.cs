@@ -12,6 +12,8 @@ public class main : MonoBehaviour
 		Player player = new Player();
 		//set the camera parent to the player so it follows the player
 		GetComponent<Camera>().transform.parent = Player.gameObject.transform;
+
+		Tiles.GenerateTiles(0, -0.45f, 100, 100);
 	}
 	
 	// Update is called once per frame

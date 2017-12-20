@@ -16,5 +16,9 @@ class Player
 		gameObject = new GameObject("Player");
 		gameObject.AddComponent<SpriteRenderer>();
 		gameObject.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/player");
+
+		gameObject.AddComponent<Rigidbody2D>();
+		gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
+		gameObject.AddComponent<BoxCollider2D>();
 	}
 }
