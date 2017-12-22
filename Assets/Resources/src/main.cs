@@ -9,11 +9,11 @@ public class main : MonoBehaviour
 	void Start ()
 	{
 		//create player class (and therefore gameobject)
-		Player player = new Player();
+		Player player = new Player(0, 0.45f);
 		//set the camera parent to the player so it follows the player
 		GetComponent<Camera>().transform.parent = Player.gameObject.transform;
 
-		Tiles.GenerateTiles(0, -0.45f, 100, 100);
+		Tiles.GenerateTiles(0, 0f, 100, 100);
 	}
 	
 	// Update is called once per frame
