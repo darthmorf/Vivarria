@@ -99,18 +99,24 @@ public class Player : MonoBehaviour {
 		RaycastHit2D rightBottom = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 1f), Vector2.right, rayDistance, tiles);
 		RaycastHit2D rightMid = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), Vector2.right, rayDistance, tiles);
 		RaycastHit2D rightTop = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + 1f), Vector2.right, rayDistance, tiles);
+		RaycastHit2D rightFar = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + 2f), Vector2.right, rayDistance * 2, tiles);
 
 		RaycastHit2D leftBottom = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 1f), Vector2.left, rayDistance, tiles);
 		RaycastHit2D leftMid = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), Vector2.left, rayDistance, tiles);
 		RaycastHit2D leftTop = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + 1f), Vector2.left, rayDistance, tiles);
+		RaycastHit2D leftFar = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + 2f), Vector2.left, rayDistance * 2, tiles);
 
-		bool collidedRight = (rightBottom.collider != null && rightMid.collider == null && rightTop.collider == null && rightBottom.collider.gameObject.layer == 9);
-		bool collidedLeft = (leftBottom.collider != null && leftMid.collider == null && leftTop.collider == null && leftBottom.collider.gameObject.layer == 9);
+		bool collidedRight = (rightBottom.collider != null && rightMid.collider == null && rightTop.collider == null && rightFar.collider == null && rightBottom.collider.gameObject.layer == 9);
+		bool collidedLeft = (leftBottom.collider != null && leftMid.collider == null && leftTop.collider == null && leftFar.collider == null && leftBottom.collider.gameObject.layer == 9);
 
-		if (collidedLeft || collidedRight)
+		if (collidedRight || collidedLeft)
 		{
 			Vector2 vec = transform.position;
 			vec.y += 1.2f;
+
+			if (collidedRight) vec.x += 0.3f;
+			else vec.x -= 0.3f;
+
 			transform.position = vec;
 		}
 	}
