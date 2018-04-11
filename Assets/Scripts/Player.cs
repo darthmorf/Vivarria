@@ -34,6 +34,7 @@ public class Player : MonoBehaviour {
 	{
 		Jump();
 		MoveHorizontal();
+		AutoStep();
 		TileBreak();
 	}
 
@@ -74,6 +75,22 @@ public class Player : MonoBehaviour {
 		else
 		{
 			sr.flipX = (Input.GetAxis("Horizontal") < 0);
+		}
+	}
+
+	void AutoStep()
+	{
+		if (Input.GetKeyUp(KeyCode.L))
+		{
+			Vector2 vec = transform.position;
+			vec.y += 1.2f;
+			transform.position = vec;
+		}
+		if (Input.GetKeyUp(KeyCode.K))
+		{
+			Vector2 vec = transform.position;
+			vec.y += 0.01f;
+			transform.position = vec;
 		}
 	}
 
