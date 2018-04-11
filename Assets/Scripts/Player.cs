@@ -15,28 +15,31 @@ public class Player : MonoBehaviour {
 
 	bool grounded;
 	bool walking = false;
+	bool tileCooldown = false;
 	int animationFrame = 0;
 	float airSpeedModifier = 1f;
 	RaycastHit2D hit;
 	Rigidbody2D rb;
 	SpriteRenderer sr;
+	LayerMask tiles;
 
 	private void Start()
 	{
 		rb = GetComponent<Rigidbody2D>();
 		sr = GetComponent<SpriteRenderer>();
+		tiles = 1 << LayerMask.NameToLayer("Tiles");
 	}
 
 	void Update ()
 	{
-		DoJump();
+		Jump();
 		MoveHorizontal();
+		TileBreak();
 	}
 
-	void DoJump()
+	void Jump()
 	{
-		LayerMask Tiles = 1 << LayerMask.NameToLayer("Tiles");
-		hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), Vector2.down, 10f, Tiles);
+		hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), Vector2.down, 10f, tiles);
 
 		if (hit.distance < 1.9f)
 		{
@@ -72,6 +75,28 @@ public class Player : MonoBehaviour {
 		{
 			sr.flipX = (Input.GetAxis("Horizontal") < 0);
 		}
+	}
+
+	void TileBreak()
+	{
+		if (Input.GetMouseButton(0) && !tileCooldown)
+		{
+			Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+			RaycastHit2D tileclick = Physics2D.Raycast(transform.position, mousePos - transform.position, 5f, tiles);
+			if (tileclick.collider != null && tileclick.collider.gameObject.layer == 9)
+			{
+				Destroy(tileclick.collider.gameObject);
+				StartCoroutine(KillTileCooldown());
+			}
+		}
+	}
+
+	IEnumerator KillTileCooldown()
+	{
+		tileCooldown = true;
+		yield return new WaitForSeconds(0.25f);
+		tileCooldown = false;
 	}
 
 	IEnumerator WalkAnim()
