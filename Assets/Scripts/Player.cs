@@ -78,22 +78,6 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	void AutoStep()
-	{
-		if (Input.GetKeyUp(KeyCode.L))
-		{
-			Vector2 vec = transform.position;
-			vec.y += 1.2f;
-			transform.position = vec;
-		}
-		if (Input.GetKeyUp(KeyCode.K))
-		{
-			Vector2 vec = transform.position;
-			vec.y += 0.01f;
-			transform.position = vec;
-		}
-	}
-
 	void TileBreak()
 	{
 		if (Input.GetMouseButton(0) && !tileCooldown)
@@ -106,6 +90,28 @@ public class Player : MonoBehaviour {
 				Destroy(tileclick.collider.gameObject);
 				StartCoroutine(KillTileCooldown());
 			}
+		}
+	}
+
+	void AutoStep()
+	{
+		float rayDistance = 0.8f;
+		RaycastHit2D rightBottom = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 1f), Vector2.right, rayDistance, tiles);
+		RaycastHit2D rightMid = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), Vector2.right, rayDistance, tiles);
+		RaycastHit2D rightTop = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + 1f), Vector2.right, rayDistance, tiles);
+
+		RaycastHit2D leftBottom = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 1f), Vector2.left, rayDistance, tiles);
+		RaycastHit2D leftMid = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), Vector2.left, rayDistance, tiles);
+		RaycastHit2D leftTop = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + 1f), Vector2.left, rayDistance, tiles);
+
+		bool collidedRight = (rightBottom.collider != null && rightMid.collider == null && rightTop.collider == null && rightBottom.collider.gameObject.layer == 9);
+		bool collidedLeft = (leftBottom.collider != null && leftMid.collider == null && leftTop.collider == null && leftBottom.collider.gameObject.layer == 9);
+
+		if (collidedLeft || collidedRight)
+		{
+			Vector2 vec = transform.position;
+			vec.y += 1.2f;
+			transform.position = vec;
 		}
 	}
 
