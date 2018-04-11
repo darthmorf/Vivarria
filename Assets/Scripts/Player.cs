@@ -16,44 +16,53 @@ public class Player : MonoBehaviour {
 	bool grounded;
 	bool walking = false;
 	int animationFrame = 0;
+	float airSpeedModifier = 1f;
 	RaycastHit2D hit;
-	Rigidbody2D r;
+	Rigidbody2D rb;
 	SpriteRenderer sr;
 
 	private void Start()
 	{
-		r = GetComponent<Rigidbody2D>();
+		rb = GetComponent<Rigidbody2D>();
 		sr = GetComponent<SpriteRenderer>();
 	}
 
 	void Update ()
 	{
-		r.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, r.velocity.y);
-		if (!walking) StartCoroutine(WalkAnim());
+		LayerMask Tiles = 1 << LayerMask.NameToLayer("Tiles");
+		hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), Vector2.down, 10f, Tiles);
 
-
-		if (Input.GetAxis("Horizontal") > 0)
+		if (hit.distance < 1.9f)
 		{
-			sr.flipX = false;
-		}
-		else if (Input.GetAxis("Horizontal") < 0)
-		{
-			sr.flipX = true;
+			grounded = true;
 		}
 		else
+		{
+			grounded = false;
+		}
+
+		if (grounded)
+		{
+			if (Input.GetKeyDown(jumpKey))
+			{
+				rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+			}
+			airSpeedModifier = 1f;
+		}
+		else airSpeedModifier = 0.75f;
+
+		rb.velocity = new Vector2(Input.GetAxis("Horizontal") * speed * airSpeedModifier, rb.velocity.y);
+		if (!walking) StartCoroutine(WalkAnim());
+		Debug.Log(rb.velocity.x);
+
+		if (Input.GetAxis("Horizontal") == 0)
 		{
 			sr.sprite = idleSprite;
 			animationFrame = 0;
 		}
-
-		hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), Vector2.down);
-
-		if(hit.distance < 1.9f) grounded = true;
-		else grounded = false;
-
-		if (grounded)
+		else
 		{
-			if (Input.GetKeyDown(jumpKey)) r.velocity = new Vector2(r.velocity.x, jumpForce);
+			sr.flipX = (Input.GetAxis("Horizontal") < 0);
 		}
 	}
 
@@ -61,7 +70,7 @@ public class Player : MonoBehaviour {
 	{
 		walking = true;
 		sr.sprite = walkSprites[animationFrame];
-		yield return new WaitForSeconds(0.075f);
+		yield return new WaitForSeconds(0.05f);
 		animationFrame++;
 		if (animationFrame >= walkSprites.Length) animationFrame = 0;
 		walking = false;
