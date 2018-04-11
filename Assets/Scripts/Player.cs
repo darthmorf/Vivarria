@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,47 +28,32 @@ public class Player : MonoBehaviour {
 
 	void Update ()
 	{
-		if (r.velocity.x != 0 && !walking)
+		r.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, r.velocity.y);
+		if (!walking) StartCoroutine(WalkAnim());
+
+
+		if (Input.GetAxis("Horizontal") > 0)
 		{
-			StartCoroutine(WalkAnim());
+			sr.flipX = false;
 		}
-		if (sr.sprite != idleSprite && r.velocity.x == 0)
+		else if (Input.GetAxis("Horizontal") < 0)
+		{
+			sr.flipX = true;
+		}
+		else
 		{
 			sr.sprite = idleSprite;
 			animationFrame = 0;
 		}
 
-
-		r.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, r.velocity.y);
-
-		bool startedGoingRight = (Input.GetAxis("Horizontal") > 0 && transform.localScale.x < 0);
-		bool startedGoingLeft  = (Input.GetAxis("Horizontal") < 0 && transform.localScale.x > 0);
-
-		if (startedGoingRight || startedGoingLeft)
-		{
-			Vector3 scale = transform.localScale;
-			scale.x = scale.x * -1;
-			transform.localScale = scale;
-		}
-
 		hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), Vector2.down);
-		if(hit.distance < 1f)
-		{
-			grounded = true;
-		}
-		else
-		{
-			grounded = false;
-		}
 
-		Debug.Log("grounded: " + grounded);
+		if(hit.distance < 1.9f) grounded = true;
+		else grounded = false;
 
 		if (grounded)
 		{
-			if (Input.GetKeyDown(jumpKey))
-			{
-				r.velocity = new Vector2(r.velocity.x, jumpForce);
-			}
+			if (Input.GetKeyDown(jumpKey)) r.velocity = new Vector2(r.velocity.x, jumpForce);
 		}
 	}
 
