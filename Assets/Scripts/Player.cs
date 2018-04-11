@@ -29,6 +29,12 @@ public class Player : MonoBehaviour {
 
 	void Update ()
 	{
+		DoJump();
+		MoveHorizontal();
+	}
+
+	void DoJump()
+	{
 		LayerMask Tiles = 1 << LayerMask.NameToLayer("Tiles");
 		hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y), Vector2.down, 10f, Tiles);
 
@@ -50,10 +56,12 @@ public class Player : MonoBehaviour {
 			airSpeedModifier = 1f;
 		}
 		else airSpeedModifier = 0.75f;
+	}
 
+	void MoveHorizontal()
+	{
 		rb.velocity = new Vector2(Input.GetAxis("Horizontal") * speed * airSpeedModifier, rb.velocity.y);
 		if (!walking) StartCoroutine(WalkAnim());
-		Debug.Log(rb.velocity.x);
 
 		if (Input.GetAxis("Horizontal") == 0)
 		{
