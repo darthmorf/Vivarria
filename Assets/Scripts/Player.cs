@@ -16,8 +16,10 @@ public class Player : MonoBehaviour {
 	bool grounded;
 	bool walking = false;
 	bool tileCooldown = false;
+	bool steppingUp = false;
 	int animationFrame = 0;
 	float airSpeedModifier = 1f;
+	float axis;
 	RaycastHit2D hit;
 	Rigidbody2D rb;
 	SpriteRenderer sr;
@@ -32,6 +34,7 @@ public class Player : MonoBehaviour {
 
 	void Update ()
 	{
+		axis = Input.GetAxis("Horizontal");
 		Jump();
 		MoveHorizontal();
 		AutoStep();
@@ -64,17 +67,17 @@ public class Player : MonoBehaviour {
 
 	void MoveHorizontal()
 	{
-		rb.velocity = new Vector2(Input.GetAxis("Horizontal") * speed * airSpeedModifier, rb.velocity.y);
+		rb.velocity = new Vector2(axis * speed * airSpeedModifier, rb.velocity.y);
 		if (!walking) StartCoroutine(WalkAnim());
 
-		if (Input.GetAxis("Horizontal") == 0)
+		if (axis == 0)
 		{
 			sr.sprite = idleSprite;
 			animationFrame = 0;
 		}
 		else
 		{
-			sr.flipX = (Input.GetAxis("Horizontal") < 0);
+			sr.flipX = (axis < 0);
 		}
 	}
 
@@ -109,16 +112,22 @@ public class Player : MonoBehaviour {
 		bool collidedRight = (rightBottom.collider != null && rightMid.collider == null && rightTop.collider == null && rightFar.collider == null && rightBottom.collider.gameObject.layer == 9);
 		bool collidedLeft = (leftBottom.collider != null && leftMid.collider == null && leftTop.collider == null && leftFar.collider == null && leftBottom.collider.gameObject.layer == 9);
 
+
 		if (collidedRight || collidedLeft)
 		{
+			rb.velocity = new Vector2(rb.velocity.x - 0.5f * axis, 8f);
 			Vector2 vec = transform.position;
-			vec.y += 1.2f;
-
-			if (collidedRight) vec.x += 0.3f;
-			else vec.x -= 0.3f;
 
 			transform.position = vec;
 		}
+	}
+
+	IEnumerator StepUp()
+	{
+		steppingUp = true;
+		float f = 0.2f;
+		yield return new WaitForSeconds(0.25f);
+		tileCooldown = false;
 	}
 
 	IEnumerator KillTileCooldown()

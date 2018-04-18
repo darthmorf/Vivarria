@@ -25,7 +25,7 @@ public class BgScroll : MonoBehaviour {
 		currentPos.x = currentPos.x + deltaX * speedX;
 		currentPos.y = currentPos.y + deltaY * speedY;
 
-		transform.position = currentPos;
+		transform.position = Vector3.Lerp(transform.position, currentPos, 1);
 		oldPos = player.transform.position;
 	}
 }
